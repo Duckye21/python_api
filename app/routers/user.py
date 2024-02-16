@@ -12,7 +12,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 @router.get("/{id}", status_code=status.HTTP_200_OK, response_model=schemas.UserResponse)
 def get_users(id: int, db: Session = Depends(get_db)):
-    user = db.query(models.Users).filter(models.Users.id == id).first()
+    user = db.query(models.User).filter(models.User.id == id).first()
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with id: {id} was not found")
     return user
@@ -21,9 +21,9 @@ def get_users(id: int, db: Session = Depends(get_db)):
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.UserResponse)
 def create_user(user: schemas.Users, db: Session = Depends(get_db)):
     user.password = utils.hash_password(user.password)
-    if db.query(models.Users).filter(models.Users.email == user.email).first() is not None:
+    if db.query(models.User).filter(models.User.email == user.email).first() is not None:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"Email already exist")
-    new_user = models.Users(**user.model_dump())
+    new_user = models.User(**user.model_dump())
     db.add(new_user)
     db.commit()
     db.refresh(new_user)

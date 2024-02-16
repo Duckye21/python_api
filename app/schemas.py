@@ -1,13 +1,15 @@
 import datetime
+from typing import Optional
 from pydantic import BaseModel, EmailStr
-# from typing import Optional
 
-
-class Posts(BaseModel):
-    # id: Optional[int] = None
-    title: str
-    content: str
-    published: bool = True
+    
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+    
+    
+class TokenData():
+    id: Optional[str] = None    
     
     
 class Users(BaseModel):
@@ -26,5 +28,24 @@ class UserResponse(BaseModel):
         
 class UserLogin(BaseModel):
     email: EmailStr
-    password: str        
+    password: str
+
+
+class Post(BaseModel):
+    title: str
+    content: str
+    published: bool = True
+    # owner: UserResponse
+    
+
+class PostCreate(Post):
+    title: str
+    content: str
+    published: bool = True
+    
+    
+class Vote(BaseModel):
+    user_id: int
+    post_id: int
+        
         
